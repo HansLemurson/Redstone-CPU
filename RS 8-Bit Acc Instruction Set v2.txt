@@ -1,6 +1,7 @@
 Started Jun 25 2021
 Ammended Nov 16 2021
 Ammended Jun 12 2022 (figured out Negate and Double)
+Ammended Jun 30 2022 (uploaded to Github, and did some reorganization)
 
 General plan:
 L-FFF-S-RRR
@@ -53,11 +54,15 @@ ALU Actions: Acc = Acc + B
 (*)High Bit Dupe <-- Used only for Arithmetic Right-Shift (so that negative numbers may be halved [round down])
 (*)Invert B Input
 (*)Flood B Input (force high)
-(x)Block Acc Input <-- Not Necessary.  Can produce 0 for "Acc In" by other means. (Acc AND 0 from a blocked B)
 (*)Write Acc (Isn't this...ALWAYS used?  Maybe the command should be "Block Writing")
-(*)Invert Acc (Do I truly NEED this?  It adds 1 tick of delay to data loop)
-(x)Clear Acc?? (Block Acc In + Write to Acc = Clear.  Not needed)
+(*)Invert Acc (Adds 1 tick of delay to data loop, but that probably won't matter)
 (-)Send Acc to B (This would allow re-use of Inversion and Flooding, reducing number of control lines)
+
+(-)Perform Jump
+(-)Push Instruction Stack
+(-)Pop Instruction Stack
+(-)Push Data Stack
+(-)Pop Data Stack
 
 (-)Zero Flag
 (-)Negative Flag
