@@ -1,0 +1,113 @@
+Started Jun 25 2021
+Ammended Nov 16 2021
+Ammended Jun 12 2022 (figured out Negate and Double)
+
+General plan:
+L-FFF-S-RRR
+
+L = Load.  If 1, FFFSRRR will be taken as an integer and added to the Accumulator. (Signed or unsigned?)
+FFF = 3 bit Function code.
+S = Sign/Special.  Will cause functions to do their "opposite", or some related action. <--- I think I may need to change this idea.
+RRR = 3-bit Register code.  This is where ALU takes data from, or where ACC writes data to.
+
+Function wishlist:
+Zero-Op functions:
+	Right-Shift Acc
+	Halve Acc (Arithmetic right shift that preserves negative)
+	Double Acc (Left Shift)
+	Clear Acc
+	Fill Acc
+	Invert Acc
+	Negate Acc <-[Might not be possible with current ALU]
+	Increment Acc
+	Decrement Acc
+One-Op Arithmetic:
+	Add to Acc
+	Sub from Acc
+	AND with Acc (Bit Select)
+	OR with Acc (Bit Set)  <-[Might not be possible with current ALU]
+	AND not with Acc (Bit Reset)
+	XOR with Acc (Bit Toggle)
+Memory Operations:
+	Copy Acc to Reg (Acc preserved)
+	Move Acc to Reg (resets Acc to 0)
+	Load Reg to Acc (overwrites Acc with Reg)
+	Swap Acc with Reg (each takes the other's data.  Could speed some things up if possible)
+	Push Acc to Stack, and load Reg into Acc (Push/Pop probably better than Swap)
+	Pop  Stack into Acc, and write Acc into Reg (I need to make a Stack, though)
+Branching: 
+(Zero-Op instructions, since I probably can't calculate and jump at the same time)
+	BEQ Branch if Acc is 0 (Branch to where?  Address stored in Special Jump Register)
+	BNE Branch if Acc is not 0
+	BLT Branch if Acc is negative
+	BGE Branch if Acc is not negative
+	Unconditional Jump (possibly not needed, since I can just clear Acc befor BEQ)
+	JMS Jump to Subroutine (Pushes Instruction pointer to a Stack)
+	RET Return from Subroutine (Pops Stack into Instruction pointer)
+
+ALU Actions: Acc = Acc + B
+(*)Carry-In: +1
+(*)Flood Carry: Acc XNOR B
+(*)Extract Carry: L-Shift of Acc AND B
+(*)Right-Shift
+(*)High Bit Dupe <-- Used only for Arithmetic Right-Shift (so that negative numbers may be halved [round down])
+(*)Invert B Input
+(*)Flood B Input (force high)
+(x)Block Acc Input <-- Not Necessary.  Can produce 0 for "Acc In" by other means. (Acc AND 0 from a blocked B)
+(*)Write Acc (Isn't this...ALWAYS used?  Maybe the command should be "Block Writing")
+(*)Invert Acc (Do I truly NEED this?  It adds 1 tick of delay to data loop)
+(x)Clear Acc?? (Block Acc In + Write to Acc = Clear.  Not needed)
+(-)Send Acc to B (This would allow re-use of Inversion and Flooding, reducing number of control lines)
+
+(-)Zero Flag
+(-)Negative Flag
+(-)Overflow Flag
+
+
+Function Codes
+000-0-RRR Zero-Op Instructions
+000-1-RRR More ZOP Instructions?
+001-0-RRR Add (Acc + Reg) 		{Default}
+001-1-RRR Subtract (Acc - Reg)		{Invert B, Carry-In}
+010-0-RRR Select (Acc AND Reg) 		{Extract Carry, Right-Shift} 
+010-1-RRR Toggle (Acc XOR Reg)		{Invert B, Flood Carry}
+011-0-RRR Reset (Acc AND not Reg)	{Invert B, Extract Carry, Right-Shift}
+011-1-RRR Set (Acc OR Reg) <--Might not be possible in ALU (Can be done in 2 steps though:  Reset bits, then Add or XOR new value)
+100-0-RRR Copy Acc into Reg
+100-1-RRR Move Acc into Reg (Clear Acc after Copy)
+101-0-RRR Load Acc from Reg {???} (Can I clear Acc before Adding?  Do I need to add a "Block Acc" function? Is this even needed?  Probably not.  If I don't want the Acc's data kept, I Move it.  It I do want it, I Copy instead)
+101-1-RRR Swap Acc with Reg <--Might not be stable (and possibly a BAD IDEA in general, though it saves a cycle now and then.)
+110-0-RRR Push Acc to Stack, Load Acc from Reg  <--Requires additional hardware!  Is there room?
+110-1-RRR Pop Stack into Acc, Move old Acc into Reg
+111-0-RRR ?
+111-1-RRR ?
+
+Zero-Op Instructions
+000-0-000 Null Operation		{Skip Write}
+000-0-001 BLT Branch to Reg if Acc highest bit is 1  (Acc < 0 in 2's complement)
+000-0-010 BEQ Branch to Reg if OR of Acc's bits is 0 (Acc == 0)
+000-0-011 JMS Jump and Push IP to I-Stack <-- Instruction Stack will be a VITALLY IMPORTANT component!!!!
+000-0-100 RET Pop I-Stack into IP then Jump
+000-0-101 BNE Branch to Reg if OR of Acc's bits is 1 (Acc != 0)
+000-0-110 BGE Branch to Reg if Acc highest bit is 0 (Acc >= 0 in 2's complement)
+000-0-111 Pause Execution (Await Input)
+000-1-000 Clear Acc 			{Flood B, Invert B, Extract Carry} <-- Not necessary? Just "MOV $0" or "Acc AND $0"
+000-1-001 Increment 			{Flood B, Invert B, Carry-In} <-- Not necessary? 1-000-0-001 (Load +1)
+000-1-010 R-Shift			{Flood B, Invert B, R-Shift} (Acc + 0, R-shifted)
+000-1-011 Invert Acc			{Flood B, Invert B, Flood Carry} (Acc XNOR 0)
+000-1-100 L-Shift (Double)		{Flood B, Extract Carry} (Acc AND -1 but L-Shifted)
+000-1-101 Negate Acc			{Flood B, Invert B, Invert Acc, Carry-In} <-- Important enough to justify "Inv Acc"?
+000-1-110 AR-Shift (Halve)		{Flood B, Invert B, Right-Shift, Duplicate highest bit} <-- Important enough for its own Op?
+000-1-111 Decrement			{Flood B} (Acc + -1)
+
+Registers:
+0: Zero <-- Do I need this if I can just Clear Acc and Flood+Invert B?
+1: Jump Reg (Could these be relative jumps?  Probably not needed with 7 bits of direct loading.)
+2: Mem Pointer
+3: Mem Read/Write
+4: $B
+5: $C
+6: $D
+7: $E
+
+
