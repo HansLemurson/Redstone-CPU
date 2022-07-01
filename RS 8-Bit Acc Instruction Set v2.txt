@@ -4,11 +4,11 @@ Ammended Jun 12 2022 (figured out Negate and Double)
 Ammended Jun 30 2022 (uploaded to Github, and did some reorganization)
 
 General plan:
-L-FFF-S-RRR
+L-FFF-S-RRR <--I'd like to keep the bit groupings organized so that the commands are easy to read in Hexadecimal.
 
 L = Load.  If 1, FFFSRRR will be taken as an integer and added to the Accumulator. (Signed or unsigned?)
 FFF = 3 bit Function code.
-S = Sign/Special.  Will cause functions to do their "opposite", or some related action. <--- I think I may need to change this idea.
+S = Set, chooses which "set" of instructions to use.  1 for Arithmetic, 0 for Branching and Memory
 RRR = 3-bit Register code.  This is where ALU takes data from, or where ACC writes data to.
 
 Function wishlist:
@@ -69,25 +69,30 @@ ALU Actions: Acc = Acc + B
 (-)Overflow Flag
 
 
-Function Codes
-000-0-RRR Zero-Op Instructions
-000-1-RRR More ZOP Instructions?
-001-0-RRR Add (Acc + Reg) 		{Default}
-001-1-RRR Subtract (Acc - Reg)		{Invert B, Carry-In}
-010-0-RRR Select (Acc AND Reg) 		{Extract Carry, Right-Shift} 
-010-1-RRR Toggle (Acc XOR Reg)		{Invert B, Flood Carry}
-011-0-RRR Reset (Acc AND not Reg)	{Invert B, Extract Carry, Right-Shift}
-011-1-RRR Set (Acc OR Reg) <--Might not be possible in ALU (Can be done in 2 steps though:  Reset bits, then Add or XOR new value)
-100-0-RRR Copy Acc into Reg
-100-1-RRR Move Acc into Reg (Clear Acc after Copy)
-101-0-RRR Load Acc from Reg {???} (Can I clear Acc before Adding?  Do I need to add a "Block Acc" function? Is this even needed?  Probably not.  If I don't want the Acc's data kept, I Move it.  It I do want it, I Copy instead)
-101-1-RRR Swap Acc with Reg <--Might not be stable (and possibly a BAD IDEA in general, though it saves a cycle now and then.)
-110-0-RRR Push Acc to Stack, Load Acc from Reg  <--Requires additional hardware!  Is there room?
-110-1-RRR Pop Stack into Acc, Move old Acc into Reg
-111-0-RRR ?
-111-1-RRR ?
+==Function Codes==
+*Single Operand Instructions*
+-Arithmetic-
+000-0-RRR Zero-Op Arithmetic (RRR controls function instead)
+001-0-RRR ??? <-- I wonder what's most appropriate for Function #1
+010-0-RRR Add (Acc + Reg) 		{Default}
+011-0-RRR Subtract (Acc - Reg)		{Invert B, Carry-In}
+100-0-RRR Select (Acc AND Reg) 		{Extract Carry, Right-Shift}
+101-0-RRR Toggle (Acc XOR Reg)		{Invert B, Flood Carry}
+110-0-RRR Reset (Acc AND not Reg)	{Invert B, Extract Carry, Right-Shift}
+111-0-RRR Set (Acc OR Reg) <--Might not be possible in ALU (Can be done in 2 steps though:  Reset bits, then Add or XOR new value)
 
-Zero-Op Instructions
+-Memory Operations-
+000-1-RRR Branching Instructions
+001-1-RRR Load Acc from Reg {???} (Can I clear Acc before Adding?  Do I need to add a "Block Acc" function? Is this even needed?  Probably not.  If I don't want the Acc's data kept, I Move it.  It I do want it, I Copy instead)
+010-1-RRR Move Acc into Reg (Clear Acc after Copy)
+011-1-RRR Copy Acc into Reg
+100-1-RRR ?
+101-1-RRR Swap Acc with Reg <--Might not be stable (and possibly a BAD IDEA in general, though it saves a cycle now and then.)
+110-1-RRR Push Acc to Stack, Load Acc from Reg  <--Requires additional hardware!  Is there room?
+111-1-RRR Pop Stack into Acc, Move old Acc into Reg
+
+*Zero-Operand Instructions*
+-Branching-
 000-0-000 Null Operation		{Skip Write}
 000-0-001 BLT Branch to Reg if Acc highest bit is 1  (Acc < 0 in 2's complement)
 000-0-010 BEQ Branch to Reg if OR of Acc's bits is 0 (Acc == 0)
@@ -96,6 +101,8 @@ Zero-Op Instructions
 000-0-101 BNE Branch to Reg if OR of Acc's bits is 1 (Acc != 0)
 000-0-110 BGE Branch to Reg if Acc highest bit is 0 (Acc >= 0 in 2's complement)
 000-0-111 Pause Execution (Await Input)
+
+Zero-Operand Arithmetic:
 000-1-000 Clear Acc 			{Flood B, Invert B, Extract Carry} <-- Not necessary? Just "MOV $0" or "Acc AND $0"
 000-1-001 Increment 			{Flood B, Invert B, Carry-In} <-- Not necessary? 1-000-0-001 (Load +1)
 000-1-010 R-Shift			{Flood B, Invert B, R-Shift} (Acc + 0, R-shifted)
