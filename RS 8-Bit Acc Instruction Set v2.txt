@@ -131,4 +131,15 @@ Registers:
 6: $D
 7: $E
 
+Hex-Friendly Register Scheme: 
+("Instructions" will always begin with 1, so doing anything with register address 2 will have the hex look like "A")
+8: Mem Pointer
+9: Mem Read/Write
+A: $A
+B: $B
+C: $C 
+D: $D
+E: Jump Register
+F: User Input/Output
+
 
