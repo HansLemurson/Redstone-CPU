@@ -64,6 +64,7 @@ ALU Actions: Acc = Acc + B
 (*)Flood B Input (force high)
 (*)Write Acc (Isn't this...ALWAYS used?  Maybe the command should be "Block Writing")
 (*)Invert Acc (Adds 1 tick of delay to data loop, but that probably won't matter)
+(-)Write to Flags (Not Acc) <-- Used to make the Compare function work without messing with stored data.
 (-)Send Acc to B (This would allow re-use of Inversion and Flooding, reducing number of control lines)
 
 (-)Perform Jump
@@ -81,8 +82,8 @@ ALU Actions: Acc = Acc + B
 *Single Operand Instructions*
 -Arithmetic-
 000-0-RRR Zero-Op Arithmetic (RRR controls function instead)
-001-0-RRR ??? <-- I wonder what's most appropriate for Function #1
-010-0-RRR Add (Acc + Reg) 		{Default}
+001-0-RRR Add (Acc + Reg) 		{Default}
+010-0-RRR Compare (Acc - Reg) 		{Invert B, Carry-In, Block Acc Write, Write to Flags}
 011-0-RRR Subtract (Acc - Reg)		{Invert B, Carry-In}
 100-0-RRR Select (Acc AND Reg) 		{Extract Carry, Right-Shift}
 101-0-RRR Toggle (Acc XOR Reg)		{Invert B, Flood Carry}
