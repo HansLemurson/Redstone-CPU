@@ -5,11 +5,19 @@ Ammended Jun 30 2022 (uploaded to Github, and did some reorganization)
 
 General plan:
 L-FFF-S-RRR <--I'd like to keep the bit groupings organized so that the commands are easy to read in Hexadecimal.
+(currently, this setup has function codes cross the half-byte boundary, making reading it in Hex look messy)
 
 L = Load.  If 1, FFFSRRR will be taken as an integer and added to the Accumulator. (Signed or unsigned?)
 FFF = 3 bit Function code.
 S = Set, chooses which "set" of instructions to use.  1 for Arithmetic, 0 for Branching and Memory
 RRR = 3-bit Register code.  This is where ALU takes data from, or where ACC writes data to.
+
+Alternate Hex-Friendly Proposal:
+L-RRR-FFFF <-- The down-side is that instructions will read "$A Add" instead of "Add $A"
+
+L = Load, but 0 means Load data (Add 0-RRR-FFFF to Accumulator), and 1 means use Function
+RRR = 3 bit register code.  Upper hex will always end up "looking" like 8-F.  Registers 8,9,A,B,C,D,E,F?
+FFFF = 4 Bit function code, but 0000 (0) and 1000 (8) mean use RRR to choose a Zero Operand Arithmetic or a Branching operation.
 
 Function wishlist:
 Zero-Op functions:
