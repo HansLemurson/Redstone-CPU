@@ -17,7 +17,7 @@ L-RRR-FFFF <-- The down-side is that instructions will read "$A Add" instead of 
 
 L = Load, but 0 means Load data (Add 0-RRR-FFFF to Accumulator), and 1 means use Function
 RRR = 3 bit register code.  Upper hex will always end up "looking" like 8-F.  Registers 8,9,A,B,C,D,E,F?
-FFFF = 4 Bit function code, but 0000 (0) and 1000 (8) mean use RRR to choose a Zero Operand Arithmetic or a Branching operation.
+FFFF = 4 Bit function code, but 0000 (0) and 1000 (8) mean use RRR to choose a Zero-Operand Arithmetic or a Branching operation.
 
 Function wishlist:
 Zero-Op functions:
@@ -102,7 +102,7 @@ ALU Actions: Acc = Acc + B
 
 *Zero-Operand Instructions*
 -Branching-
-000-0-000 Null Operation		{Skip Write}
+000-0-000 Null Operation		{Skip Write} <--I might not need this if "Add Constant of 0" takes the place of instruction 0-000-0-000
 000-0-001 BLT Branch to Reg if Acc highest bit is 1  (Acc < 0 in 2's complement)
 000-0-010 BEQ Branch to Reg if OR of Acc's bits is 0 (Acc == 0)
 000-0-011 JMS Jump and Push IP to I-Stack <-- Instruction Stack will be a VITALLY IMPORTANT component!!!!
