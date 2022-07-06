@@ -2,8 +2,9 @@ Started Jun 25 2021
 Ammended Nov 16 2021
 Ammended Jun 12 2022 (figured out Negate and Double)
 Ammended Jun 30 2022 (uploaded to Github, and did some reorganization)
+Ammended Jul 6 2022 (Converted to Hex-Friendly Function Codes)
 
-General plan:
+Original plan:
 L-FFF-S-RRR <--I'd like to keep the bit groupings organized so that the commands are easy to read in Hexadecimal.
 (currently, this setup has function codes cross the half-byte boundary, making reading it in Hex look messy)
 
@@ -12,8 +13,8 @@ FFF = 3 bit Function code.
 S = Set, chooses which "set" of instructions to use.  1 for Arithmetic, 0 for Branching and Memory
 RRR = 3-bit Register code.  This is where ALU takes data from, or where ACC writes data to.
 
-Alternate Hex-Friendly Proposal:
-L-RRR-FFFF <-- The down-side is that instructions will read "$A Add" instead of "Add $A"
+==Alternate Hex-Friendly Proposal==
+L-RRR-FFFF <-- The down-side is that instructions will read "$A Add" instead of "Add $A".  Reverse Polish Notation?
 
 L = Load, but 0 means Load data (Add 0-RRR-FFFF to Accumulator), and 1 means use Function
 RRR = 3 bit register code.  Upper hex will always end up "looking" like 8-F.  Registers 8,9,A,B,C,D,E,F?
