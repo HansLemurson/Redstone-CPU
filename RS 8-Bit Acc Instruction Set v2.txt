@@ -62,10 +62,12 @@ ALU Actions: Acc = Acc + B
 (*)High Bit Dupe <-- Used only for Arithmetic Right-Shift (so that negative numbers may be halved [round down])
 (*)Invert B Input
 (*)Flood B Input (force high)
-(*)Write Acc (Isn't this...ALWAYS used?  Maybe the command should be "Block Writing")
 (*)Invert Acc (Adds 1 tick of delay to data loop, but that probably won't matter)
+(*)Divert Acc (Sends Acc output to Registers, rather than ALU) <-- Maybe this is a dumb idea and should just be "Block Acc".  Why would the registers ever need to be shielded from Acc output?  Just don't write.
+
+(*)Write Acc (Isn't this...ALWAYS used?  Maybe the command should be "Block Writing")
 (-)Write to Flags (Not Acc) <-- Used to make the Compare function work without messing with stored data.
-(-)Send Acc to B (This would allow re-use of Inversion and Flooding, reducing number of control lines)
+(-)Write to Register
 
 (-)Perform Jump
 (-)Push Instruction Stack
@@ -91,12 +93,12 @@ ALU Actions: Acc = Acc + B
 111-0-RRR Set (Acc OR Reg) <--Might not be possible in ALU (Can be done in 2 steps though:  Reset bits, then Add or XOR new value)
 
 -Memory Operations-
-000-1-RRR Branching Instructions
-001-1-RRR Load Acc from Reg {???} (Can I clear Acc before Adding?  Do I need to add a "Block Acc" function? Is this even needed?  Probably not.  If I don't want the Acc's data kept, I Move it.  It I do want it, I Copy instead)
-010-1-RRR Move Acc into Reg (Clear Acc after Copy)
-011-1-RRR Copy Acc into Reg
+000-1-RRR Branching Instructions (RRR controls function instead)
+001-1-RRR Load Acc from Reg {Divert Acc} (Acc gets 0 + Reg)
+010-1-RRR Move Acc into Reg {Divert Acc, Write to Reg, Invert B, Flood B} (Acc gets 0 + 0)
+011-1-RRR Copy Acc into Reg {Divert Acc, Write to Reg, Block Acc Write} (Acc unchanged)
 100-1-RRR ?
-101-1-RRR Swap Acc with Reg <--Might not be stable (and possibly a BAD IDEA in general, though it saves a cycle now and then.)
+101-1-RRR Swap Acc with Reg {Divert Acc, Write to Reg}<--Might not be stable (and possibly a BAD IDEA in general, though it saves a cycle now and then.)
 110-1-RRR Push Acc to Stack, Load Acc from Reg  <--Requires additional hardware!  Is there room?
 111-1-RRR Pop Stack into Acc, Move old Acc into Reg
 
