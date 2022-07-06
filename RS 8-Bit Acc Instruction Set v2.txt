@@ -113,7 +113,7 @@ ALU Actions: Acc = Acc + B
 000-0-110 BGE Branch to Reg if Acc highest bit is 0 (Acc >= 0 in 2's complement)
 000-0-111 Pause Execution (Await Input)
 
-Zero-Operand Arithmetic:
+-Zero-Operand Arithmetic-
 000-1-000 Clear Acc 			{Flood B, Invert B, Extract Carry} <-- Not necessary? Just "MOV $0" or "Acc AND $0"
 000-1-001 Increment 			{Flood B, Invert B, Carry-In} <-- Not necessary? 1-000-0-001 (Load +1)
 000-1-010 R-Shift			{Flood B, Invert B, R-Shift} (Acc + 0, R-shifted)
@@ -134,7 +134,7 @@ Registers:
 7: $E
 
 Hex-Friendly Register Scheme: 
-("Instructions" will always begin with 1, so doing anything with register address 2 will have the hex look like "A")
+("Instructions" will always begin with 1, so doing anything with register address 2 will have the hex look like "A", for example)
 8: Mem Pointer
 9: Mem Read/Write
 A: $A
