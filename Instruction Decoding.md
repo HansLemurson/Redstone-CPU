@@ -14,7 +14,7 @@ F-codes 0001-0111
 Table B: 1-Operand Memory
 F-Codes 1001-1111
 
-Table C: 0-Operant Arithmetic
+Table C: 0-Operand Arithmetic
 F-Code: 0000
 R-Codes 1000-1111
 
@@ -39,3 +39,49 @@ R-Codes select the function in C and D, so I need to separately decode RRR
 R-Codes are disabled whenever FFF == 000
 S is used as the 4th bit in both A&B and C&D to choose between the two tables.
 
+#Lookup Tables
+Plan for how the control-lines for the 4 different tables should be grouped
+
+Table A:
+    Cin Xnr Lan Rsh Biv Aiv Bwr Fwr
+ZOP~ 
+ADD 
+CMP *               *       *   *
+SUB *               *
+AND         *   *
+XOR     *           *
+ANB         *   *   *
+NOR?        *   *   *   *
+
+Table B:
+    Biv Bfl Dac Bwr Rwr Dps Dpo
+BRC~
+LOD         *
+MOV *   *   *       *
+CPY         *   *   *
+?
+SWP         *       *
+PSH                     *
+POP         *       *       *
+
+Table C:
+    Cin Lan Rsh Bfl Biv Aiv Dhb
+CLR     *       *   *
+INC *           *   *
+RSH         *   *   *
+INV             *   *   *
+LSH     *       *
+NEG *           *   *   *    
+HLV         *   *   *       *
+DEC             *
+
+Table D:
+    Bwr Brc Ziv Civ Fiv Ips Ipo
+JMP *   *
+BLT *
+BEQ *
+CAL *
+RET *
+BNE *
+BGE *
+WFI *
