@@ -43,6 +43,7 @@ S is used as the 4th bit in both A&B and C&D to choose between the two tables.
 Plan for how the control-lines for the 4 different tables should be grouped
 
 Table A:
+Carry In, Xnor, Left-And, Right-Shift, B Invert, Accumulator Invert,  Block Acc Write, Flag Write
     Cin Xnr Lan Rsh Biv Aiv Bwr Fwr
 ZOP~ 
 ADD 
@@ -54,6 +55,7 @@ ANB         *   *   *
 NOR?        *   *   *   *
 
 Table B:
+B invert, B Flood, Divert Accumulator, Block Acc Write, Register Write, Data Stack Push, Data Stack Pop
     Biv Bfl Dac Bwr Rwr Dps Dpo
 BRC~
 LOD         *
@@ -65,6 +67,7 @@ PSH                     *
 POP         *       *       *
 
 Table C:
+Carry-in, Left-And, Right-Shift, Flood B, Invert B, Invert Accumulator, Duplicate Highest Bit
     Cin Lan Rsh Bfl Biv Aiv Dhb
 CLR     *       *   *
 INC *           *   *
@@ -76,12 +79,13 @@ HLV         *   *   *       *
 DEC             *
 
 Table D:
-    Bwr Brc Ziv Civ Fiv Ips Ipo
+Block Acc Write, Branch, Zero Flag Invert, Carry Flag Invert, Sign Flag Invert, Instruction Push, Instruction Pop, Halt
+    Bwr Brc Zfi Cfi Sfi Ips Ipo Hlt
 JMP *   *
-BLT *
-BEQ *
-CAL *
-RET *
-BNE *
-BGE *
-WFI *
+BLT *   *   
+BEQ *   *
+CAL *   *               *
+RET *   *                   *
+BNE *   *
+BGE *   *
+WFI *                           *
