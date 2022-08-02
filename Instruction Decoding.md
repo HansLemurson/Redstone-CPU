@@ -79,13 +79,13 @@ HLV         *   *   *       *
 DEC             *
 
 Table D:
-Block Acc Write, Branch, Zero Flag Invert, Carry Flag Invert, Sign Flag Invert, Instruction Push, Instruction Pop, Halt
-    Bwr Brc Zfi Cfi Sfi Ips Ipo Hlt
+Block Acc Write, Branch, Zero Flag Check, Sign Flag Check, Invert Flag Check, Instruction Push, Instruction Pop, Halt
+    Bwr Brc Zfc Sfc Ivf Ips Ipo Hlt
 JMP *   *
-BLT *   *   
-BEQ *   *
+BLT *   *       *       
+BEQ *   *   *
 CAL *   *               *
 RET *   *                   *
-BNE *   *
-BGE *   *
+BNE *   *   *       *
+BGE *   *       *   *
 WFI *                           *
