@@ -89,3 +89,21 @@ RET *   *                   *
 BNE *   *   *       *
 BGE *   *       *   *
 WFI *                           *
+
+Physically constructing the tables creates some challenges:
+Instruction Bus goes: L-RRR-S-FFF
+Two tables (A and B) need to get addressed from one triplet of wires (FFF),
+the other two (C and D) need to get addressed from the other triplet (RRR)
+The status of FFF == 000 is what activates the use of RRR for the C&D tables.
+But for BOTH tables, the S wire controls whether they are read from as A/C or B/D.
+
+I need to simultaneously need to group and split the signals from the wires.
+
+Tables A and C have many control-bits in common, so I'd like them to be next to each other.  
+B and D are totally different from each other, and B is mostly different from either A or C since it deals with Memory, not Arithmetic.
+
+If I stack the tables vertically, I think it should go: BACD
+Though maybe the D table should go on top?  DBAC?  No, A&B are FFF tables, but C&D are RRR tables, so should remain paired.
+
+BACD it is.
+
