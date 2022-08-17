@@ -111,11 +111,15 @@ Though maybe the D table should go on top?  DBAC?  No, A&B are FFF tables, but C
 BACD it is.
 
 ---------------------------
+
+Control Bits on ALU ordered from Left (front input) to Right:
+Bfl, Biv, Dac, Aiv, Cin, Bwr, Xnr, Lan, Dhb, Rsh
+
 Control-Line Layout in the 4 tables:
 Front -> Back
     0       1       2       3       4       5       6       7
 B:  Bfl     Biv     Dac     Bwr     Rwr     Dps     Dpo     ---
-A:  Xnr     Biv     Aiv     Bwr     Cin     Lan     Rsh     Fwr
-C:  Bfl     Biv     Aiv     Bwr     Cin     Lan     Rsh     Dhb
+A:  Fwr     Biv     Aiv     Bwr     Cin     Lan     Xnr     Rsh
+C:  Bfl     Biv     Aiv     Bwr     Cin     Lan     Dhb     Rsh
 D:  ?       ?       ?       ?       ?       ?       ?       ?
 
