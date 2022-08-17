@@ -42,6 +42,9 @@ S is used as the 4th bit in both A&B and C&D to choose between the two tables.
 #Lookup Tables
 Plan for how the control-lines for the 4 different tables should be grouped
 
+Control Bits on ALU ordered from Left (front input) to Right:
+Flood B, Invert B, Divert Acc, Invert Acc, Carry In, Block Acc Write, XNOR, Left-Shifted AND, Duplicate Highest Bit, Right-Shift
+
 Table A:
 Carry In, Xnor, Left-And, Right-Shift, B Invert, Accumulator Invert,  Block Acc Write, Flag Write
     Cin Xnr Lan Rsh Biv Aiv Bwr Fwr
@@ -106,4 +109,13 @@ If I stack the tables vertically, I think it should go: BACD
 Though maybe the D table should go on top?  DBAC?  No, A&B are FFF tables, but C&D are RRR tables, so should remain paired.
 
 BACD it is.
+
+---------------------------
+Control-Line Layout in the 4 tables:
+Front -> Back
+    0       1       2       3       4       5       6       7
+B:  Bfl     Biv     Dac     Bwr     Rwr     Dps     Dpo     ---
+A:  Xnr     Biv     Aiv     Bwr     Cin     Lan     Rsh     Fwr
+C:  Bfl     Biv     Aiv     Bwr     Cin     Lan     Rsh     Dhb
+D:  ?       ?       ?       ?       ?       ?       ?       ?
 
