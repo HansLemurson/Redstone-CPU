@@ -145,4 +145,10 @@ D: $D
 E: Jump Register
 F: User Input/Output
 
+Example Instruction in Hexadecimal:
+A1: Add from $A
+B2: Sub with $B
+80: Unconditional Jump
+F8: Decrement Total
+
 
