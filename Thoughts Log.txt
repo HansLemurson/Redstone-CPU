@@ -1,1 +1,21 @@
 This will just record thoughts I have while constructing the machine or make plans.
+
+Instruction Decoder: Aug. 21, 2022
+Building the Instruction Decoder has been immensely complicated, since it has to be compact, fast, 
+and has tight constraints for where it can fit.
+The first challenge has been creating the logic that will execute my L-RRR-S-FFF instruction format.
+I have basically two different tables that need to be addressed:
+One uses RRRS, the other uses SFFF.
+The S-Bit has to be wired into both of these at the same time, but the arrangement I planned on Building
+groups them into 4 tables that all get stacked on top of each other.
+Even More complicated though, was the fact that when FFF == 000, then RRRS is used for the function selection.
+So this means that part of the Address-Decoding in the Tables actually depends on the chosen address.
+
+Trying to wire this all together in a way that avoids adding any un-necessary delays was also difficult.
+I ended up fusing low-delay Blocking-Gates with the places that Repeaters were actually required to disable 
+the Tables that are not being used.
+
+And to think my primary concern was with laying out the Control Bits!!!
+
+I've finally managed to build the Instruction Decoder now, or at least part of it.  The Decoding part.
+7 bits of input now uniquely and reliably selects 30 different data locations.  Hurray!!
