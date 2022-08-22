@@ -19,3 +19,10 @@ And to think my primary concern was with laying out the Control Bits!!!
 
 I've finally managed to build the Instruction Decoder now, or at least part of it.  The Decoding part.
 7 bits of input now uniquely and reliably selects 30 different data locations.  Hurray!!
+...
+The plans I'd made for how to group the Control Bits into 4 different tables is really paying off now.
+Installing the ROM is going fairly easily as a result.
+
+I do find myself left with a certain amount of dread though as I build these things, 
+worried that I'm "baking in" some sort of mistake that will come to bite me later.
+I just have to have faith that I did enough planning earlier that it should all work out, and that any problems I can fix.
